@@ -1,7 +1,6 @@
 import Navbar from "./components/Navbar";
 import CustomSection from "./components/CustomSection";
 import Hero from "./components/Hero";
-import HeroSection from "./components/HeroSection";
 import About from "./components/About";
 import Services from "./components/Services";
 import PlansSection from "./components/PlansSection";

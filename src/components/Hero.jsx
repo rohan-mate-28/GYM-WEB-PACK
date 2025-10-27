@@ -6,7 +6,7 @@ export default function Hero() {
   return (
     <section
   id="home"
-  className="relative w-full min-h-screen flex flex-col md:flex-row items-center justify-center px-6 md:px-16 lg:px-24 bg-gradient-to-br from-gray-900 via-black to-gray-800 overflow-hidden"
+  className="relative w-full min-h-screen flex flex-col md:flex-row items-center justify-center px-6 md:px-16 lg:px-24 bg-gradient-to-br from-gray-900 via-black to-gray-800 overflow-hidden pt-24 md:pt-32"
 >
   {/* Text */}
   <motion.div
