@@ -19,24 +19,55 @@ export default function JoinNowModal({ isOpen, onClose, selectedPlan }) {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (formData.mobile.length !== 10) {
       alert("Please enter a valid 10-digit mobile number.");
       return;
     }
 
-    // Show popup first
-    setShowPopup(true);
+    // Telegram Bot Info
+    const BOT_TOKEN = "8275897754:AAG7e4W-T2_FZF6AczY1MGUjlUJzNJL0kbs";
+    const CHAT_ID = "6930237636";
+    const TELEGRAM_URL = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
 
-    // Clear form
-    setFormData({ name: "", mobile: "", plan: selectedPlan });
+    // Message Format
+    const text = `
+📩 *New Gym Plan Enquiry!*
+🏋️ Plan: ${formData.plan}
+👤 Name: ${formData.name}
+📞 Mobile: ${formData.mobile}
+  `;
 
-    // Close modal after a short delay (optional)
-    setTimeout(() => {
-      setShowPopup(false);
-    }, 2500);
+    try {
+      await fetch(TELEGRAM_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: CHAT_ID,
+          text: text,
+          parse_mode: "Markdown",
+        }),
+      });
+
+      // Show popup
+      setShowPopup(true);
+
+      // Reset form
+      setFormData({ name: "", mobile: "", plan: selectedPlan });
+
+      // Auto-close popup
+      setTimeout(() => {
+        setShowPopup(false);
+        onClose();
+      }, 2500);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      alert("Something went wrong! Try again.");
+    }
   };
+
 
   return (
     <>
