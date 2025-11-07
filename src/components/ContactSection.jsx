@@ -5,10 +5,14 @@ export default function ContactSection() {
   const [formData, setFormData] = useState({ name: "", mobile: "", type: "Enquiry" });
   const [showPopup, setShowPopup] = useState(false);
 
+  // 🔹 Replace with your actual bot token and chat ID
+  const CHAT_ID = "6930237636";
+  const BOT_TOKEN = "8275897754:AAG7e4W-T2_FZF6AczY1MGUjlUJzNJL0kbs";
+  const TELEGRAM_URL = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "mobile") {
-      // Allow only digits, max 10 characters
       const numericValue = value.replace(/\D/g, "").slice(0, 10);
       setFormData({ ...formData, mobile: numericValue });
     } else {
@@ -16,26 +20,42 @@ export default function ContactSection() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (formData.mobile.length !== 10) {
       alert("Please enter a valid 10-digit mobile number.");
       return;
     }
 
-    // Show popup
-    setShowPopup(true);
+    // 📨 Prepare Telegram message
+    const text = `📩 *New Inquiry Received!*\n\n👤 Name: ${formData.name}\n📞 Mobile: ${formData.mobile}\n📋 Type: ${formData.type}`;
 
-    // Reset form
-    setFormData({ name: "", mobile: "", type: "Enquiry" });
+    try {
+      // 🔹 Send to Telegram
+      await fetch(TELEGRAM_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: CHAT_ID,
+          text,
+          parse_mode: "Markdown",
+        }),
+      });
 
-    // Auto-close popup after 2.5 seconds
-    setTimeout(() => setShowPopup(false), 2500);
+      // ✅ Show popup confirmation
+      setShowPopup(true);
+      setFormData({ name: "", mobile: "", type: "Enquiry" });
+      setTimeout(() => setShowPopup(false), 2500);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      alert("Something went wrong while sending the message.");
+    }
   };
 
   return (
     <section id="contact" className="bg-gray-900 text-white py-16 px-4 sm:px-8 md:px-16 relative overflow-hidden">
-      {/* Animated background shapes */}
+      {/* Background effects */}
       <motion.div
         className="absolute top-0 left-0 w-56 h-56 sm:w-72 sm:h-72 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-spin-slow"
         initial={{ scale: 0 }}
@@ -67,6 +87,7 @@ export default function ContactSection() {
           Have questions or want to join our gym? Fill out the form below!
         </motion.p>
 
+        {/* Contact form */}
         <motion.form
           className="grid gap-4 sm:gap-6 bg-gray-800 p-6 sm:p-8 rounded-xl shadow-lg"
           initial={{ opacity: 0 }}
@@ -114,6 +135,7 @@ export default function ContactSection() {
           </motion.button>
         </motion.form>
 
+        {/* Contact info */}
         <motion.div
           className="mt-8 text-gray-400 space-y-1 sm:space-y-2 text-sm sm:text-base"
           initial={{ opacity: 0 }}
